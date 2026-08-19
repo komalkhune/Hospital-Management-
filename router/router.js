@@ -71,7 +71,7 @@ router.get("/getallmedicine", getallmedicine)
 
 
 
-router.get("/patient",(req,res)=>{
+router.get("/",(req,res)=>{
 res.send("this is the signip app")
 })
 

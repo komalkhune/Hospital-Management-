@@ -54,9 +54,7 @@ let Name=req.body.Name;
             //              Welcome to our Hospital Management System! `
             //    })
 
-            axios.post(
-    "https://api.brevo.com/v3/smtp/email",
-    {
+            axios.post( "https://api.brevo.com/v3/smtp/email",{
         sender: {
             name: "Hospital Mail",
             email: process.env.BREVO_FROM_EMAIL
@@ -65,7 +63,6 @@ let Name=req.body.Name;
         to: [
             {
                 email: Email,
-                // name: `Dr. ${Name}`
             }
         ],
 
@@ -268,22 +265,29 @@ exports.statuschange=(req, res)=>{
         
 
         if(success){
-             const transporter = nodemailer.createTransport({  
-                host: "smtp.gmail.com",
-                port: 587,
-                secure: false, // use STARTTLS (upgrade connection to TLS after connecting)
-                auth: {
-                  user: "khunekomal08@gmail.com",
-                  pass: "notwrpfavobzgkzg",
+
+            axios.post( "https://api.brevo.com/v3/smtp/email",{
+                sender: {
+                   name: "Hospital Mail",
+                   email: process.env.BREVO_FROM_EMAIL
                 },
-            });
-            transporter.sendMail({
-              from: '"Hospital Appointment mail" <khunekomal08@gmail.com>', // sender address
-              to: pemail, // list of recipients
-              subject: "About Appointment", // subject line
-              text: "", // plain text body
-              html: `Dear, <h2>${pname} </h2><p>Your appointment has been successfully booked with <b> dr. ${Dname}</b> for ${reason} .</p> <br> Thank You. <br> Hospital Team.` , // HTML body
-              });
+
+               to: [
+                  {
+                      email: pemail,
+                  }
+                  ],
+
+                subject: "About Appointment",
+                 htmlContent: `Dear, <h2>${pname} </h2><p>Your appointment has been successfully booked with <b> dr. ${Dname}</b> for ${reason} .</p> <br> Thank You. <br> Hospital Team.` ,
+            },
+            {
+               headers: {
+                "api-key": process.env.BREVO_API_KEY,
+                "content-type": "application/json"
+               }
+            }
+            )
         }
 
     }).catch((error)=>{ 

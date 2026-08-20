@@ -4,6 +4,9 @@ const jwt=require("jsonwebtoken");
 require("dotenv").config()
 const bcrypt=require("bcrypt")
 
+const axios = require("axios");
+
+
 
 exports.emailverify=(req, res)=>{
 
@@ -25,45 +28,47 @@ exports.emailverify=(req, res)=>{
 
           console.log("OTP:", otp);
 
-             const transporter = nodemailer.createTransport({
-                      host: "smtp.gmail.com",
-                      port: 587,
-                      secure: false, // use STARTTLS (upgrade connection to TLS after connecting)
-                      auth: {
-                        user: "khunekomal08@gmail.com",
-                        pass: "notwrpfavobzgkzg",
-                      },
-                  });  
-      
-                  transporter.sendMail({
-                    from: '"Hospital mail" <khunekomal08@gmail.com>', // sender address   <b>${Name}</b> 
-                    to: Email, // list of recipients
-                    subject: "About Verify", // subject line
-                    text: `Your OTP is ${otp}`, // plain text body
-                    html: ` <h2>Password Reset</h2>
+            axios.post( "https://api.brevo.com/v3/smtp/email",{
+               sender: {
+                  name: "Hospital Mail",
+                 email: process.env.BREVO_FROM_EMAIL
+               },
+          
+             to: [
+                {
+                    email: Email,
+                }
+                 ],
+          
+              subject: "About Verify",
+               htmlContent: ` <h2>Password Reset</h2>
 
-                             <p>You requested to reset your password.</p>
+                  <p>You requested to reset your password.</p>
                      
-                             <p>Your verification OTP is:</p>
+                  <p>Your verification OTP is:</p>
                      
-                             <h2>${otp}</h2>
+                  <h2>${otp}</h2>
                      
-                             <p>This OTP is valid for 5 minutes.</p>
+                  <p>This OTP is valid for 5 minutes.</p>
                      
-                             <p>If you did not request this, please ignore this email.</p> `
-                    });
+              <p>If you did not request this, please ignore this email.</p> `
+              },
+              {
+                 headers: {
+                  "api-key": process.env.BREVO_API_KEY,
+                  "content-type": "application/json"
+                 }
+              }
+            );
 
 
-                      const token=jwt.sign({
-                         patientemail:success[0].email
-                       }, process.env.JWT_SECRET)
+                 const token=jwt.sign({
+                    patientemail:success[0].email
+                 }, process.env.JWT_SECRET)
                     
-                      console.log("token",token)
+                 console.log("token",token)
                               
-                      //   res.json({success:true,
-                      //    token:token, 
-                      //    patientId: success[0]._id 
-                      // });
+                     
 
               const vdata={
                 success:true,

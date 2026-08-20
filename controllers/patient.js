@@ -32,23 +32,48 @@ exports.postpatient=(req, res)=>{
 
           if(success.acknowledged===true){
 
-            const transporter = nodemailer.createTransport({
-                host: "smtp.gmail.com",
-                port: 587,
-                secure: false, // use STARTTLS (upgrade connection to TLS after connecting)
-                auth: {
-                  user: "khunekomal08@gmail.com",
-                  pass: "notwrpfavobzgkzg",
-                },
-            });  
+            axios.post( "https://api.brevo.com/v3/smtp/email",{
+                   sender: {
+                      name: "Hospital Mail",
+                     email: process.env.BREVO_FROM_EMAIL
+                   },
+              
+                 to: [
+                    {
+                        email: Email,
+                    }
+                     ],
+              
+                  subject: "About Signing",
+                   htmlContent:`<h2> Registration Successful ! </h2> <p>Thank you, <b>${Name}</b> for signing up with our Hospital Management System. Your account has been created successfully. We look forward to serving you.</p> `
+                  },
+                  {
+                     headers: {
+                      "api-key": process.env.BREVO_API_KEY,
+                      "content-type": "application/json"
+                     }
+                  }
+                )        
 
-            transporter.sendMail({
-              from: '"Hospital mail" <khunekomal08@gmail.com>', // sender address   <b>${Name}</b> 
-              to: Email, // list of recipients
-              subject: "About Signing", // subject line
-              text: "", // plain text body
-              html: `<h2> Registration Successful ! </h2> <p>Thank you, <b>${Name}</b> for signing up with our Hospital Management System. Your account has been created successfully. We look forward to serving you.</p> `
-              });
+
+
+            // const transporter = nodemailer.createTransport({
+            //     host: "smtp.gmail.com",
+            //     port: 587,
+            //     secure: false, // use STARTTLS (upgrade connection to TLS after connecting)
+            //     auth: {
+            //       user: "khunekomal08@gmail.com",
+            //       pass: "notwrpfavobzgkzg",
+            //     },
+            // });  
+
+            // transporter.sendMail({
+            //   from: '"Hospital mail" <khunekomal08@gmail.com>', // sender address   <b>${Name}</b> 
+            //   to: Email, // list of recipients
+            //   subject: "About Signing", // subject line
+            //   text: "", // plain text body
+            //   html: `<h2> Registration Successful ! </h2> <p>Thank you, <b>${Name}</b> for signing up with our Hospital Management System. Your account has been created successfully. We look forward to serving you.</p> `
+            //   });
 
         }      
 

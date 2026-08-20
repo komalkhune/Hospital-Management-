@@ -10,8 +10,8 @@ const mongoconnect=(callback)=>{
         console.log(success)
         _db=success.db("mydatabace");
         console.log("Database Connected Successfully")
-    }).catch((err)=>{
-        console.log(err);
+    }).catch((error)=>{
+        console.log(error);
     });
     callback();
 }
